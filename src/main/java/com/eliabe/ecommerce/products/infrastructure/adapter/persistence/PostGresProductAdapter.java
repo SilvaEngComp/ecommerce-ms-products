@@ -7,6 +7,8 @@ import com.eliabe.ecommerce.products.infrastructure.adapter.persistence.reposito
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class PostGresProductAdapter implements ProductOutputPort {
@@ -17,5 +19,10 @@ public class PostGresProductAdapter implements ProductOutputPort {
         ProductEntity productEntity = new ProductEntity(product.code(),product.name(),product.unitPrice());
         ProductEntity savedEntity = jpaProductRepository.save(productEntity);
         return new Product(savedEntity.code(), savedEntity.name(), savedEntity.unitPrice());
+    }
+
+    @Override
+    public Optional<Product> findByCode(Long code) {
+        return jpaProductRepository.findById(code);
     }
 }
