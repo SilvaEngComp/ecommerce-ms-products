@@ -17,12 +17,18 @@ public class PostGresProductAdapter implements ProductOutputPort {
     @Override
     public Product save(Product product){
         ProductEntity productEntity = new ProductEntity(product.code(),product.name(),product.unitPrice());
-        ProductEntity savedEntity = jpaProductRepository.save(productEntity);
-        return new Product(savedEntity.code(), savedEntity.name(), savedEntity.unitPrice());
+        return entityToDto(jpaProductRepository.save(productEntity));
     }
 
     @Override
     public Optional<Product> findByCode(Long code) {
-        return jpaProductRepository.findById(code);
+        return Optional.ofNullable(entityToDto(jpaProductRepository.findById(code).orElse(null)));
+    }
+
+    private Product entityToDto(ProductEntity productEntity){
+        if(productEntity==null){
+            return null;
+        }
+        return new Product(productEntity.getCode(), productEntity.getName(), productEntity.getUnitPrice());
     }
 }
