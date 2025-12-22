@@ -19,20 +19,16 @@ public class PostGresProductAdapter implements ProductOutputPort {
 
     @Override
     public ProductDTO save(ProductRequest request){
-
-        ProductEntity productEntity = mapper.toEntity(request);
-        return entityToDto(jpaProductRepository.save(productEntity));
+return Optional.of(request)
+        .map(mapper::toEntity)
+        .map(jpaProductRepository::save)
+        .map(mapper::toDto)
+        .orElseThrow();
     }
 
     @Override
     public Optional<ProductDTO> findByCode(Long code) {
-        return Optional.ofNullable(entityToDto(jpaProductRepository.findById(code).orElse(null)));
+        return jpaProductRepository.findById(code).map(mapper::toDto);
     }
 
-    private ProductDTO entityToDto(ProductEntity productEntity){
-        if(productEntity==null){
-            return null;
-        }
-        return mapper.toDto(productEntity);
-    }
 }

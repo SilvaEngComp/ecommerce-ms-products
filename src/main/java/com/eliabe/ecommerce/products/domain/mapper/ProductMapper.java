@@ -5,8 +5,11 @@ import com.eliabe.ecommerce.products.web.dto.ProductDTO;
 import com.eliabe.ecommerce.products.web.dto.ProductRequest;
 import org.mapstruct.Mapper;
 
+import java.util.Optional;
+
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
     ProductDTO toDto(ProductEntity entity);
     ProductEntity toEntity(ProductRequest request);
+
 }
