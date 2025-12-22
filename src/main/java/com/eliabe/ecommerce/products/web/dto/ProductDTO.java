@@ -1,8 +1,8 @@
-package com.eliabe.ecommerce.products.domain.model;
+package com.eliabe.ecommerce.products.web.dto;
 
 import java.math.BigDecimal;
 
-public record Product (
+public record ProductDTO(
     
      Long code,
 

@@ -1,10 +1,9 @@
 package com.eliabe.ecommerce.products.application.ports.input;
 
-import com.eliabe.ecommerce.products.domain.model.Product;
-
-import java.math.BigDecimal;
+import com.eliabe.ecommerce.products.web.dto.ProductDTO;
+import com.eliabe.ecommerce.products.web.dto.ProductRequest;
 
 @FunctionalInterface
 public interface CreateProductUseCase {
-    Product execute(String name, BigDecimal unitPrice);
+    ProductDTO execute(ProductRequest request);
 }

@@ -1,9 +1,11 @@
 package com.eliabe.ecommerce.products.infrastructure.adapter.persistence;
 
+import com.eliabe.ecommerce.products.domain.mapper.ProductMapper;
 import com.eliabe.ecommerce.products.domain.output.ProductOutputPort;
-import com.eliabe.ecommerce.products.domain.model.Product;
+import com.eliabe.ecommerce.products.web.dto.ProductDTO;
 import com.eliabe.ecommerce.products.infrastructure.adapter.persistence.entity.ProductEntity;
 import com.eliabe.ecommerce.products.infrastructure.adapter.persistence.repository.JpaProductRepository;
+import com.eliabe.ecommerce.products.web.dto.ProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,22 +15,24 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostGresProductAdapter implements ProductOutputPort {
     private final JpaProductRepository jpaProductRepository;
+    private final ProductMapper mapper;
 
     @Override
-    public Product save(Product product){
-        ProductEntity productEntity = new ProductEntity(product.code(),product.name(),product.unitPrice());
+    public ProductDTO save(ProductRequest request){
+
+        ProductEntity productEntity = mapper.toEntity(request);
         return entityToDto(jpaProductRepository.save(productEntity));
     }
 
     @Override
-    public Optional<Product> findByCode(Long code) {
+    public Optional<ProductDTO> findByCode(Long code) {
         return Optional.ofNullable(entityToDto(jpaProductRepository.findById(code).orElse(null)));
     }
 
-    private Product entityToDto(ProductEntity productEntity){
+    private ProductDTO entityToDto(ProductEntity productEntity){
         if(productEntity==null){
             return null;
         }
-        return new Product(productEntity.getCode(), productEntity.getName(), productEntity.getUnitPrice());
+        return mapper.toDto(productEntity);
     }
 }

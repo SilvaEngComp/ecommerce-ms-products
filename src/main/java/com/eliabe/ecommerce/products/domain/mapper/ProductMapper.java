@@ -1,4 +1,12 @@
 package com.eliabe.ecommerce.products.domain.mapper;
 
-public class ProductMapper {
+import com.eliabe.ecommerce.products.infrastructure.adapter.persistence.entity.ProductEntity;
+import com.eliabe.ecommerce.products.web.dto.ProductDTO;
+import com.eliabe.ecommerce.products.web.dto.ProductRequest;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public interface ProductMapper {
+    ProductDTO toDto(ProductEntity entity);
+    ProductEntity toEntity(ProductRequest request);
 }

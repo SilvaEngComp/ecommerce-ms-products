@@ -1,11 +1,12 @@
 package com.eliabe.ecommerce.products.domain.output;
 
-import com.eliabe.ecommerce.products.domain.model.Product;
+import com.eliabe.ecommerce.products.web.dto.ProductDTO;
+import com.eliabe.ecommerce.products.web.dto.ProductRequest;
 
 import java.util.Optional;
 
 public interface ProductOutputPort {
-    Product save(Product product);
+    ProductDTO save(ProductRequest request);
 
-    Optional<Product> findByCode(Long code);
+    Optional<ProductDTO> findByCode(Long code);
 }
