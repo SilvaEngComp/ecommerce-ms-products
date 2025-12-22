@@ -23,16 +23,30 @@ configurations {
 repositories {
 	mavenCentral()
 }
-
 dependencies {
+	// Spring Boot Starters
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.springframework.boot:spring-boot-starter-web' // Note: 'web' is standard, 'webmvc' is usually internal
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// MapStruct
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+	// FIX 1: Use annotationProcessor for the processor
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
+	// FIX 2: Add the binding so MapStruct can see Lombok's code
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+	// Database & DevTools
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+
+	// Testing
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
