@@ -23,7 +23,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<ProductDTO> findProduct(@RequestParam Long code){
+    public ResponseEntity<ProductDTO> findProduct(@PathVariable Long code){
         return this.service.execute(code)
                 .map(ResponseEntity::ok)
                 .orElseGet(()->ResponseEntity.notFound().build());
