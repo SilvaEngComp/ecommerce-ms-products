@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("products")
 @RequiredArgsConstructor
@@ -23,9 +26,15 @@ public class ProdutoController {
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<ProductDTO> findProduct(@PathVariable Long code){
+    public ResponseEntity<ProductDTO> findByCode(@PathVariable Long code){
         return this.service.execute(code)
                 .map(ResponseEntity::ok)
                 .orElseGet(()->ResponseEntity.notFound().build());
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<ProductDTO>> findAllProduct(){
+        return Optional.ofNullable(this.service.execute()).map(ResponseEntity::ok).orElseGet(()->ResponseEntity.notFound().build());
     }
 }

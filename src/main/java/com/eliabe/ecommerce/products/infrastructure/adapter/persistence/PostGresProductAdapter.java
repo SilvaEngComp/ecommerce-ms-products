@@ -1,14 +1,14 @@
 package com.eliabe.ecommerce.products.infrastructure.adapter.persistence;
 
 import com.eliabe.ecommerce.products.domain.mapper.ProductMapper;
-import com.eliabe.ecommerce.products.domain.output.ProductOutputPort;
+import com.eliabe.ecommerce.products.application.ports.output.ProductOutputPort;
 import com.eliabe.ecommerce.products.web.dto.ProductDTO;
-import com.eliabe.ecommerce.products.infrastructure.adapter.persistence.entity.ProductEntity;
 import com.eliabe.ecommerce.products.infrastructure.adapter.persistence.repository.JpaProductRepository;
 import com.eliabe.ecommerce.products.web.dto.ProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -29,6 +29,11 @@ return Optional.of(request)
     @Override
     public Optional<ProductDTO> findByCode(Long code) {
         return jpaProductRepository.findById(code).map(mapper::toDto);
+    }
+
+    @Override
+    public List<ProductDTO> findAll() {
+        return jpaProductRepository.findAll().stream().map(mapper::toDto).toList();
     }
 
 }
