@@ -3,6 +3,7 @@ package com.eliabe.ecommerce.products.web.controller;
 import com.eliabe.ecommerce.products.web.dto.ProductDTO;
 import com.eliabe.ecommerce.products.domain.service.ProductService;
 import com.eliabe.ecommerce.products.web.dto.ProductRequest;
+import com.eliabe.ecommerce.products.web.swagger.SwaggerController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +16,7 @@ import java.util.Optional;
 @RequestMapping("products")
 @RequiredArgsConstructor
 @Validated
-public class ProdutoController {
+public class ProdutoController implements SwaggerController {
 
     private final ProductService service;
 
