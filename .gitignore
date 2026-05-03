@@ -35,3 +35,13 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### logs ###
+logs/
+
+### gradle ###
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
