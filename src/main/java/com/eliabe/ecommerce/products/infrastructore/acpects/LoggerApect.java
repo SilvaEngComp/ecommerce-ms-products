@@ -10,11 +10,20 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Aspect
 @Component
 @Slf4j
 public class LoggerApect {
+    private final ThreadLocal<Integer> sequenceCounter = new ThreadLocal<Integer>() {
+        @Override
+        protected Integer initialValue() {
+            return 0;
+        }
+    };
     @Pointcut("execution(* com.eliabe.ecommerce.products.domain.service.*.*(..))")
     public void serviceMethods() {
     }
@@ -27,11 +36,29 @@ public class LoggerApect {
     public void repositoryMethods() {
     }
 
-    @Before("serviceMethods() || controllerMethods() || repositoryMethods()")
-    public void logMethodEntry(JoinPoint joinPoint) {
+    @Before("controllerMethods()")
+    public void logControllerEntry(JoinPoint joinPoint) {
+        int sequence = sequenceCounter.get() + 1;
+        sequenceCounter.set(sequence);
         Object[] args = joinPoint.getArgs();
         String parameters = formatParameters(args);
-        log.info(">>> Entering: {}.{} | Parameters: {}",
+        String endpoint = getEndpointInfo();
+        log.info("----------------------{}----------------------", endpoint);
+        log.info("[{}] | Entering: {}.{} | Parameters: {}",
+                sequence,
+                joinPoint.getSignature().getDeclaringTypeName(),
+                joinPoint.getSignature().getName(),
+                parameters);
+    }
+
+    @Before("serviceMethods() || repositoryMethods()")
+    public void logMethodEntry(JoinPoint joinPoint) {
+        int sequence = sequenceCounter.get() + 1;
+        sequenceCounter.set(sequence);
+        Object[] args = joinPoint.getArgs();
+        String parameters = formatParameters(args);
+        log.info("[{}] >>> Entering: {}.{} | Parameters: {}",
+                sequence,
                 joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(),
                 parameters);
@@ -39,7 +66,9 @@ public class LoggerApect {
 
     @After("serviceMethods() || controllerMethods() || repositoryMethods()")
     public void logMethodExit(JoinPoint joinPoint) {
-        log.info("<<< Exiting: {}.{}",
+        int sequence = sequenceCounter.get();
+        log.info("[{}] <<< Exiting: {}.{}",
+                sequence,
                 joinPoint.getSignature().getName());
     }
 
@@ -48,7 +77,9 @@ public class LoggerApect {
         long start = System.currentTimeMillis();
         Object returnValue = joinPoint.proceed();
         long executionTime = System.currentTimeMillis() - start;
-        log.info("⏱️ {}.{} executed in {} ms | Return: {}",
+        int sequence = sequenceCounter.get();
+        log.info("[{}] ⏱️ {}.{} executed in {} ms | Return: {}",
+                sequence,
                 joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(),
                 executionTime,
@@ -83,7 +114,21 @@ public class LoggerApect {
 
     @AfterThrowing(pointcut = "serviceMethods() || controllerMethods() || repositoryMethods()", throwing = "ex")
     public void logExceptions(JoinPoint joinPoint, Throwable ex) {
-        log.error("Exception in {}.{}: {}", joinPoint.getSignature().getDeclaringTypeName(),
+        int sequence = sequenceCounter.get();
+        log.error("[{}] Exception in {}.{}: {}", sequence, joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(), ex.getMessage());
+    }
+
+    private String getEndpointInfo() {
+        try {
+            ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attrs != null) {
+                HttpServletRequest request = attrs.getRequest();
+                return request.getMethod() + " " + request.getRequestURI();
+            }
+        } catch (Exception e) {
+            // Ignore exceptions when request context is not available
+        }
+        return "N/A";
     }
 }
