@@ -1,4 +1,4 @@
-package com.eliabe.ecommerce.products.infrastructore.acpects;
+package com.eliabe.ecommerce.products.infrastructure.acpects;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
